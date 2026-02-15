@@ -1,4 +1,4 @@
-import { openai } from '@/lib/openai';
+import { getOpenAIClient } from '@/lib/openai';
 import { ListingInput, ListingOutput } from '@/types/listing';
 
 const SYSTEM_PROMPT = `You are a senior real estate copywriter with 15+ years of experience writing high-converting MLS listing descriptions.
@@ -27,6 +27,7 @@ export async function generateListingPackage(input: ListingInput): Promise<Listi
 
   Ensure the output is strictly valid JSON.`;
 
+    const openai = getOpenAIClient();
     const response = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
