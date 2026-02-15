@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { NextResponse } from 'next/server';
 import { generateListingPackage } from '@/services/aiService';
 import { ListingInput } from '@/types/listing';

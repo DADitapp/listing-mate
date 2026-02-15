@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { login, signup } from './actions'
 import { Building2, Mail, Lock, ArrowRight, Sparkles, UserPlus } from 'lucide-react'
 
