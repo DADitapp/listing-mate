@@ -4,7 +4,6 @@ import { NextResponse } from 'next/server';
 import { generateListingPackage } from '@/services/aiService';
 import { ListingInput } from '@/types/listing';
 import { createClient } from '@/utils/supabase/server';
-import crypto from 'crypto';
 
 export async function POST(req: Request) {
     try {
@@ -41,7 +40,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Required fields are missing' }, { status: 400 });
         }
 
-        // Strict Counting Logic: Hash the input to detect changes
+        // Strict Counting Logic: Hash the input using Web Crypto API (SHA-256) for Edge compatibility
         const inputString = JSON.stringify({
             address: input.address.toLowerCase().trim(),
             beds: input.beds,
@@ -51,7 +50,12 @@ export async function POST(req: Request) {
             features: input.features.toLowerCase().trim(),
             tone: input.tone
         });
-        const inputHash = crypto.createHash('md5').update(inputString).digest('hex');
+
+        const msgBuffer = new TextEncoder().encode(inputString);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const inputHash = Array.from(new Uint8Array(hashBuffer))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
 
         // Check if this exact generation already exists
         const { data: existingListing } = await supabase
