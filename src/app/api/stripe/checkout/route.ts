@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
-import { stripe } from '@/lib/stripe'
+import { getStripeClient } from '@/lib/stripe'
 
 export async function POST(req: Request) {
     try {
@@ -19,6 +19,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Price ID is required' }, { status: 400 })
         }
 
+        const stripe = getStripeClient()
         const session = await stripe.checkout.sessions.create({
             customer_email: user.email,
             line_items: [
