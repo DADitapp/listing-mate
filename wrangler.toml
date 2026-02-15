@@ -1,0 +1,7 @@
+name = "listing-mate"
+compatibility_date = "2024-11-25"
+compatibility_flags = ["nodejs_compat"]
+
+[pages_build_config]
+build_command = "npm run build:pages"
+destination_dir = ".vercel/output"
