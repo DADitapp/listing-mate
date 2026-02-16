@@ -85,8 +85,8 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalExamples: 'Zillow/Realtor.com',
         },
         pricing: {
-            basic: { price: '$9', amount: 900 },
-            pro: { price: '$19', amount: 1900 },
+            basic: { price: '$19', amount: 1900 },
+            pro: { price: '$39', amount: 3900 },
         },
         tones: ['Standard', 'Luxury', 'Family', 'Investor'],
         addressPlaceholder: 'e.g. 123 Main St, Anytown, NC 27000',
@@ -108,8 +108,8 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalExamples: 'Rightmove/Zoopla',
         },
         pricing: {
-            basic: { price: '£7', amount: 700 },
-            pro: { price: '£15', amount: 1500 },
+            basic: { price: '£15', amount: 1500 },
+            pro: { price: '£29', amount: 2900 },
         },
         tones: ['Standard', 'Luxury', 'Family', 'Investor', 'Period Property', 'New Build'],
         addressPlaceholder: 'e.g. 14 Kensington Gardens, London SW7',
@@ -131,8 +131,8 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalExamples: 'Domain/realestate.com.au',
         },
         pricing: {
-            basic: { price: 'A$14', amount: 1400 },
-            pro: { price: 'A$29', amount: 2900 },
+            basic: { price: 'A$29', amount: 2900 },
+            pro: { price: 'A$59', amount: 5900 },
         },
         tones: ['Standard', 'Luxury', 'Family', 'Investor', 'Coastal', 'Rural'],
         addressPlaceholder: 'e.g. 42 Harbour St, Sydney NSW 2000',
