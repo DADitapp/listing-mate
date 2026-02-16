@@ -8,8 +8,9 @@ export async function createClient() {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
     // Securely guard against missing credentials to prevent worker crash (Error 1101)
-    if (!supabaseUrl || !supabaseAnonKey) {
-        throw new Error('Supabase configuration is missing. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in the Cloudflare Dashboard.')
+    if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('your_supabase_url')) {
+        console.warn('Supabase configuration is missing or using placeholders.')
+        return null
     }
 
     return createServerClient(

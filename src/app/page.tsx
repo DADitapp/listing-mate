@@ -6,6 +6,11 @@ import DashboardClient from '@/components/DashboardClient'
 export default async function DashboardPage() {
   const supabase = await createClient()
 
+  // Gracefully handle missing configuration by redirecting to landing
+  if (!supabase) {
+    redirect('/landing')
+  }
+
   const {
     data: { user },
   } = await supabase.auth.getUser()

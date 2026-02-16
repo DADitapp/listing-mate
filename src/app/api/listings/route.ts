@@ -5,6 +5,11 @@ import { createClient } from '@/utils/supabase/server';
 export async function GET() {
     try {
         const supabase = await createClient();
+
+        if (!supabase) {
+            return NextResponse.json({ error: 'Supabase services are not yet configured.' }, { status: 503 });
+        }
+
         const { data: { user } } = await supabase.auth.getUser();
 
         if (!user) {
