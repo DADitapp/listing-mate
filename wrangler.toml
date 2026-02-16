@@ -2,3 +2,13 @@ name = "listing-mate"
 pages_build_output_dir = ".open-next/assets"
 compatibility_date = "2025-02-14"
 compatibility_flags = ["nodejs_compat_v2"]
+
+[vars]
+# Public Variables (Non-Sensitive)
+NEXT_PUBLIC_SUPABASE_URL = "https://your_supabase_url_here"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key_here"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "your_stripe_publishable_key_here"
+NEXT_PUBLIC_APP_URL = "https://listing-mate.pages.dev"
+
+# NOTE: Sensitive Secrets (OPENAI_API_KEY, STRIPE_SECRET_KEY, etc.) 
+# must be added via the Cloudflare Dashboard under Settings > Variables > Secrets.
