@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:pages": "npm run build && npx @opennextjs/cloudflare build && npx esbuild .open-next/worker.js --bundle --outfile=.open-next/assets/_worker.js --format=esm --platform=browser --external:__STATIC_CONTENT_MANIFEST --minify"
+    "build:pages": "npm run build && npx @opennextjs/cloudflare build && npx esbuild .open-next/worker.js --bundle --outfile=.open-next/assets/_worker.js --format=esm --platform=browser --external:__STATIC_CONTENT_MANIFEST --external:cloudflare:* --external:node:* --minify"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20260214.0",
