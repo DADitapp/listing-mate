@@ -1,7 +1,7 @@
 name = "listing-mate"
 pages_build_output_dir = ".open-next/assets"
 compatibility_date = "2025-02-14"
-compatibility_flags = ["nodejs_compat"]
+compatibility_flags = ["nodejs_compat_v2"]
 
 [vars]
 # Public Variables (Non-Sensitive)
