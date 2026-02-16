@@ -79,32 +79,56 @@ export default function LandingPage() {
 
                     <div className="mt-20 lg:mt-0 relative">
                         <div className="absolute -inset-4 bg-blue-500/10 rounded-3xl blur-3xl"></div>
-                        <div className="relative bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden p-2 lg:rotate-2">
-                            <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
-                                <div className="flex items-center gap-3 mb-6">
+                        <div className="relative bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden p-2 lg:rotate-1 hover:rotate-0 transition-transform duration-500">
+                            <div className="bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+                                {/* Browser chrome */}
+                                <div className="flex items-center gap-3 px-4 py-3 bg-slate-100/80 border-b border-slate-200">
                                     <div className="w-3 h-3 rounded-full bg-red-400"></div>
                                     <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                                     <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                                    <div className="h-2 w-32 bg-slate-200 rounded-full ml-4"></div>
-                                </div>
-                                <div className="space-y-4">
-                                    <div className="h-4 w-3/4 bg-blue-100 rounded-lg"></div>
-                                    <div className="h-24 w-full bg-white border border-slate-100 rounded-xl p-4">
-                                        <div className="h-2 w-full bg-slate-50 rounded mb-2"></div>
-                                        <div className="h-2 w-5/6 bg-slate-50 rounded mb-2"></div>
-                                        <div className="h-2 w-full bg-slate-50 rounded"></div>
+                                    <div className="flex-1 mx-4 h-6 bg-white rounded-lg flex items-center px-3">
+                                        <span className="text-[10px] text-slate-400 font-mono">listingmate.ai</span>
                                     </div>
-                                    <div className="h-10 w-full bg-blue-600 rounded-xl"></div>
                                 </div>
-                                <div className="mt-8 pt-8 border-t border-slate-100">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="h-4 w-24 bg-slate-200 rounded-full"></div>
-                                        <div className="h-4 w-12 bg-blue-100 rounded-full"></div>
+
+                                {/* Property header */}
+                                <div className="px-5 pt-4 pb-3 border-b border-slate-100 bg-white">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="text-[11px] font-bold text-blue-600 uppercase tracking-wider mb-0.5">✨ AI Generated</p>
+                                            <h4 className="text-sm font-bold text-slate-900">12 Ocean View Drive, Camps Bay</h4>
+                                            <p className="text-[11px] text-slate-500 mt-0.5">4 Bed · 3 Bath · 320 m² · R8,500,000</p>
+                                        </div>
+                                        <span className="text-xs bg-green-50 text-green-700 font-semibold px-2 py-1 rounded-lg border border-green-100">Luxury</span>
                                     </div>
-                                    <div className="space-y-2">
-                                        <div className="h-2 w-full bg-slate-100 rounded"></div>
-                                        <div className="h-2 w-full bg-slate-100 rounded"></div>
-                                        <div className="h-2 w-2/3 bg-slate-100 rounded"></div>
+                                </div>
+
+                                {/* Output tabs */}
+                                <div className="flex bg-white border-b border-slate-100">
+                                    <div className="px-4 py-2 text-[11px] font-bold text-blue-600 border-b-2 border-blue-600">Listing</div>
+                                    <div className="px-4 py-2 text-[11px] font-medium text-slate-400">Social</div>
+                                    <div className="px-4 py-2 text-[11px] font-medium text-slate-400">Email</div>
+                                    <div className="px-4 py-2 text-[11px] font-medium text-slate-400">Portal</div>
+                                    <div className="px-4 py-2 text-[11px] font-medium text-slate-400">Headlines</div>
+                                </div>
+
+                                {/* Example listing content */}
+                                <div className="p-5 bg-white">
+                                    <p className="text-xs text-slate-700 leading-relaxed">
+                                        Perched above Camps Bay&apos;s iconic coastline, this exceptional 4-bedroom residence offers an unrivalled fusion of contemporary luxury and Atlantic Ocean panoramas. Floor-to-ceiling glass frames the sweep of beach and mountain, flooding the open-plan living areas with natural light.
+                                    </p>
+                                    <p className="text-xs text-slate-700 leading-relaxed mt-3">
+                                        The chef&apos;s kitchen features imported Caesarstone countertops, integrated Miele appliances, and a generous island perfect for entertaining. The private master suite boasts a walk-in wardrobe and
+                                        <span className="inline-block w-1.5 h-3.5 bg-blue-500 rounded-sm ml-0.5 animate-pulse"></span>
+                                    </p>
+
+                                    {/* Copy button hint */}
+                                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-100">
+                                        <div className="flex items-center gap-1.5 text-[10px] text-blue-600 font-semibold">
+                                            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
+                                            Copy to Clipboard
+                                        </div>
+                                        <span className="text-[10px] text-slate-300 ml-auto">247 words</span>
                                     </div>
                                 </div>
                             </div>
