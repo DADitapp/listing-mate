@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:pages": "npm run build && npx @opennextjs/cloudflare build"
+    "build:pages": "npm run build && npx @opennextjs/cloudflare build && cp .open-next/worker.js .open-next/assets/_worker.js"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20260214.0",
