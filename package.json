@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "build:pages": "npx @cloudflare/next-on-pages"
+    "build:pages": "npm run build && npx @opennextjs/cloudflare"
   },
   "dependencies": {
     "@cloudflare/workers-types": "^4.20260214.0",
@@ -27,7 +27,7 @@
     "tailwind-merge": "^3.4.1"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.16",
+    "@opennextjs/cloudflare": "^0.3.16",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

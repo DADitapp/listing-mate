@@ -1,7 +1,13 @@
 {
     "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "listing-mate",
+    "main": ".open-next/worker.js",
     "compatibility_date": "2024-11-18",
     "compatibility_flags": [
         "nodejs_compat"
-    ]
+    ],
+    "assets": {
+        "directory": ".open-next/assets",
+        "binding": "ASSETS"
+    }
 }
