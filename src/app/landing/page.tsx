@@ -1,10 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Building2, Sparkles, Zap, Clock, ShieldCheck, ArrowRight, Star, Globe } from 'lucide-react';
 import Link from 'next/link';
+import { Region, REGION_CONFIGS, getRegionConfig } from '@/config/regions';
+import { cn } from '@/lib/utils';
+
+const REGIONS: Region[] = ['ZA', 'US', 'UK', 'AU'];
 
 export default function LandingPage() {
+    const [pricingRegion, setPricingRegion] = useState<Region>('ZA');
+    const pricingConfig = getRegionConfig(pricingRegion);
+
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans">
             {/* Navigation */}
@@ -156,30 +163,75 @@ export default function LandingPage() {
             {/* Pricing Section */}
             <section id="pricing" className="py-32 bg-slate-50 border-y border-slate-100">
                 <div className="max-w-5xl mx-auto px-6">
-                    <div className="text-center mb-16 space-y-4">
+                    <div className="text-center mb-12 space-y-4">
                         <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Simple, transparent pricing.</h2>
-                        <p className="text-lg text-slate-500">Start free. Upgrade when you&apos;re ready.</p>
+                        <p className="text-lg text-slate-500">Start with 3 free listings. Upgrade when you&apos;re ready.</p>
+
+                        {/* Region Toggle for Pricing */}
+                        <div className="flex items-center justify-center gap-2 pt-4">
+                            <span className="text-sm text-slate-400 font-medium">Show prices in</span>
+                            <div className="flex gap-1 bg-white border border-slate-200 rounded-xl p-1 shadow-sm">
+                                {REGIONS.map((r) => {
+                                    const config = getRegionConfig(r);
+                                    return (
+                                        <button
+                                            key={r}
+                                            type="button"
+                                            onClick={() => setPricingRegion(r)}
+                                            className={cn(
+                                                "flex items-center gap-1 px-3 py-1.5 text-sm rounded-lg transition-all",
+                                                pricingRegion === r
+                                                    ? "bg-blue-50 text-blue-700 font-semibold"
+                                                    : "text-slate-500 hover:text-slate-700"
+                                            )}
+                                        >
+                                            <span>{config.flag}</span>
+                                            <span className="hidden sm:inline">{r}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-                        {/* Free Tier */}
+                    <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                        {/* Free Trial */}
                         <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-6 shadow-sm">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900">Free</h3>
+                                <h3 className="text-xl font-bold text-slate-900">Free Trial</h3>
                                 <p className="text-sm text-slate-500 mt-1">Try it out, no card needed</p>
                             </div>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-5xl font-extrabold text-slate-900">R0</span>
-                                <span className="text-slate-400 font-medium">/forever</span>
+                                <span className="text-5xl font-extrabold text-slate-900">{pricingConfig.currencySymbol}0</span>
                             </div>
                             <ul className="space-y-3 text-sm text-slate-600">
-                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> 5 listing packages</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> 3 listing packages</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> All output formats</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Multi-region support</li>
-                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Copy to clipboard</li>
                             </ul>
                             <Link href="/login" className="block w-full py-3 text-center border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:border-slate-300 transition-all">
                                 Get Started
+                            </Link>
+                        </div>
+
+                        {/* Basic Tier */}
+                        <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-6 shadow-sm">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900">Basic</h3>
+                                <p className="text-sm text-slate-500 mt-1">For part-time agents</p>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-5xl font-extrabold text-slate-900">{pricingConfig.pricing.basic.price}</span>
+                                <span className="text-slate-400 font-medium">/month</span>
+                            </div>
+                            <ul className="space-y-3 text-sm text-slate-600">
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> <strong>10</strong> listings per month</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> All output formats</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Multi-region support</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Listing history</li>
+                            </ul>
+                            <Link href="/login" className="block w-full py-3 text-center border-2 border-blue-200 text-blue-700 font-bold rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-all">
+                                Choose Basic
                             </Link>
                         </div>
 
@@ -193,18 +245,18 @@ export default function LandingPage() {
                                 <p className="text-sm text-slate-500 mt-1">For active agents</p>
                             </div>
                             <div className="flex items-baseline gap-1">
-                                <span className="text-5xl font-extrabold text-slate-900">R199</span>
+                                <span className="text-5xl font-extrabold text-slate-900">{pricingConfig.pricing.pro.price}</span>
                                 <span className="text-slate-400 font-medium">/month</span>
                             </div>
                             <ul className="space-y-3 text-sm text-slate-600">
-                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> <strong>Unlimited</strong> listing packages</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> <strong>Unlimited</strong> listings</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> All output formats</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Multi-region support</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Listing history &amp; archive</li>
                                 <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Priority support</li>
                             </ul>
                             <Link href="/login" className="block w-full py-3 text-center bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
-                                Start Free Trial
+                                Choose Pro
                             </Link>
                         </div>
                     </div>

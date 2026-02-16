@@ -19,6 +19,10 @@ export interface RegionConfig {
         /** Portal examples */
         portalExamples: string;
     };
+    pricing: {
+        basic: { price: string; amount: number };
+        pro: { price: string; amount: number };
+    };
     tones: string[];
     /** Placeholder for the address field */
     addressPlaceholder: string;
@@ -26,7 +30,7 @@ export interface RegionConfig {
     pricePlaceholder: string;
     /** Examples of portals for marketing */
     portalBrands: string[];
-    /** Additional SA-specific feature categories */
+    /** Additional region-specific feature categories */
     extraFeatures?: Record<string, string[]>;
 }
 
@@ -44,6 +48,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalLabel: 'Portal Description (Property24)',
             portalTab: 'Portal',
             portalExamples: 'Property24/Private Property',
+        },
+        pricing: {
+            basic: { price: 'R149', amount: 14900 },
+            pro: { price: 'R299', amount: 29900 },
         },
         tones: ['Standard', 'Luxury', 'Family', 'Investor', 'Coastal', 'Estate Living', 'Security Estate', 'Golf Estate'],
         addressPlaceholder: 'e.g. 12 Ocean View Dr, Camps Bay, Cape Town',
@@ -76,6 +84,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalTab: 'Zillow',
             portalExamples: 'Zillow/Realtor.com',
         },
+        pricing: {
+            basic: { price: '$9', amount: 900 },
+            pro: { price: '$19', amount: 1900 },
+        },
         tones: ['Standard', 'Luxury', 'Family', 'Investor'],
         addressPlaceholder: 'e.g. 123 Main St, Anytown, NC 27000',
         pricePlaceholder: '250,000',
@@ -95,6 +107,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalTab: 'Portal',
             portalExamples: 'Rightmove/Zoopla',
         },
+        pricing: {
+            basic: { price: '£7', amount: 700 },
+            pro: { price: '£15', amount: 1500 },
+        },
         tones: ['Standard', 'Luxury', 'Family', 'Investor', 'Period Property', 'New Build'],
         addressPlaceholder: 'e.g. 14 Kensington Gardens, London SW7',
         pricePlaceholder: '450,000',
@@ -113,6 +129,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
             portalLabel: 'Portal Description (Domain)',
             portalTab: 'Portal',
             portalExamples: 'Domain/realestate.com.au',
+        },
+        pricing: {
+            basic: { price: 'A$14', amount: 1400 },
+            pro: { price: 'A$29', amount: 2900 },
         },
         tones: ['Standard', 'Luxury', 'Family', 'Investor', 'Coastal', 'Rural'],
         addressPlaceholder: 'e.g. 42 Harbour St, Sydney NSW 2000',

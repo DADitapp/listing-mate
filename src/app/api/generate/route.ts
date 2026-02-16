@@ -35,7 +35,7 @@ export async function POST(req: Request) {
         }
 
         const isPro = profile.subscription_status === 'pro';
-        const trialLimit = 5;
+        const trialLimit = 3;
 
         const body = await req.json();
         const input: ListingInput = body.input;

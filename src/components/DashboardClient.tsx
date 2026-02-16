@@ -40,7 +40,7 @@ export default function DashboardClient({
     const [copied, setCopied] = useState(false);
 
     const isPro = subscriptionStatus === 'pro';
-    const trialLimit = 5;
+    const trialLimit = 3;
 
     const fetchHistory = useCallback(async () => {
         setIsHistoryLoading(true);
