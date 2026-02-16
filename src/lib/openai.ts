@@ -21,8 +21,6 @@ export const getOpenAIClient = () => {
     return openaiInstance;
 };
 
-// Deprecated: Use getOpenAIClient() instead. 
-// Keeping this for compatibility during transition if needed, but better to refactor.
-export const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY || 'dummy-key-for-build',
-});
+// Deprecated: Remove the top-level instantiation that crashes the worker on startup.
+// Use getOpenAIClient() instead.
+// export const openai = new OpenAI(...);

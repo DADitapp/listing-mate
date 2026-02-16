@@ -12,8 +12,6 @@ export const getSupabaseClient = () => {
     return supabaseInstance;
 };
 
-// Deprecated: Use getSupabaseClient() instead
-export const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://dummy.supabase.co',
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'dummy-key'
-);
+// Deprecated: Remove the top-level instantiation that crashes the worker on startup.
+// Use getSupabaseClient() instead.
+// export const supabase = createClient(...);
