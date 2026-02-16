@@ -1,9 +1,7 @@
 'use client';
 
-
-// Build Refresh ID: 2026-02-16-01-35
 import React from 'react';
-import { Building2, Sparkles, Zap, Clock, ShieldCheck, ArrowRight, Star } from 'lucide-react';
+import { Building2, Sparkles, Zap, Clock, ShieldCheck, ArrowRight, Star, Globe } from 'lucide-react';
 import Link from 'next/link';
 
 export default function LandingPage() {
@@ -31,14 +29,14 @@ export default function LandingPage() {
                 <div className="max-w-7xl mx-auto px-6 text-center lg:text-left lg:grid lg:grid-cols-2 gap-12 items-center">
                     <div className="space-y-8 max-w-2xl mx-auto lg:mx-0">
                         <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-bold tracking-wide uppercase">
-                            <Sparkles className="w-4 h-4" />
-                            Built for Keller Williams Agents
+                            <Globe className="w-4 h-4" />
+                            AI-Powered Property Listings
                         </div>
                         <h1 className="text-5xl lg:text-7xl font-extrabold text-slate-900 leading-[1.1] tracking-tight">
-                            Write Real Estate Listings in <span className="text-blue-600">10 Seconds.</span>
+                            Write Property Listings in <span className="text-blue-600">10 Seconds.</span>
                         </h1>
                         <p className="text-xl text-slate-600 leading-relaxed">
-                            Generate MLS descriptions, social media posts, and email announcements instantly. Stop wasting hours on marketing copy and focus on closing deals.
+                            Generate listing descriptions, social media posts, and email announcements instantly. Stop wasting hours on marketing copy and focus on closing deals.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                             <Link href="/" className="px-8 py-4 bg-blue-600 text-white text-lg font-bold rounded-2xl hover:bg-blue-700 hover:scale-[1.02] transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2">
@@ -49,7 +47,7 @@ export default function LandingPage() {
                                 <div className="flex -space-x-2">
                                     {[1, 2, 3, 4].map(i => (
                                         <div key={i} className="w-10 h-10 rounded-full border-2 border-white bg-slate-100 flex items-center justify-center overflow-hidden">
-                                            <img src={`https://i.pravatar.cc/150?u=agent\${i}`} alt="Agent" />
+                                            <img src={`https://i.pravatar.cc/150?u=agent${i}`} alt="Agent" />
                                         </div>
                                     ))}
                                 </div>
@@ -57,8 +55,17 @@ export default function LandingPage() {
                                     <div className="flex text-yellow-500 mb-0.5">
                                         {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-3 h-3 fill-current" />)}
                                     </div>
-                                    <span className="font-bold text-slate-900">500+</span> <span className="text-slate-500">KW Agents</span>
+                                    <span className="font-bold text-slate-900">500+</span> <span className="text-slate-500">Agents Worldwide</span>
                                 </div>
+                            </div>
+                        </div>
+                        {/* Region flags */}
+                        <div className="flex items-center gap-3 pt-2">
+                            <span className="text-sm text-slate-400 font-medium">Available in</span>
+                            <div className="flex gap-2">
+                                {['🇿🇦', '🇺🇸', '🇬🇧', '🇦🇺'].map((flag, i) => (
+                                    <span key={i} className="text-2xl">{flag}</span>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -99,14 +106,14 @@ export default function LandingPage() {
                 </div>
             </section>
 
-            {/* Social Proof Barra */}
+            {/* Social Proof Bar */}
             <div className="bg-slate-50 py-12 border-y border-slate-100 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-6 opacity-40 grayscale flex justify-around items-center">
+                    <span className="text-2xl font-bold italic tracking-tighter">PROPERTY24</span>
                     <span className="text-2xl font-bold italic tracking-tighter">ZILLOW</span>
-                    <span className="text-2xl font-bold italic tracking-tighter">MLS</span>
-                    <span className="text-2xl font-bold italic tracking-tighter">COMPASS</span>
+                    <span className="text-2xl font-bold italic tracking-tighter">RIGHTMOVE</span>
+                    <span className="text-2xl font-bold italic tracking-tighter">DOMAIN</span>
                     <span className="text-2xl font-bold italic tracking-tighter">RE/MAX</span>
-                    <span className="text-2xl font-bold italic tracking-tighter">KELLER WILLIAMS</span>
                 </div>
             </div>
 
@@ -114,7 +121,7 @@ export default function LandingPage() {
             <section id="features" className="py-32 max-w-7xl mx-auto px-6">
                 <div className="text-center mb-20 space-y-4">
                     <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Everything you need to market a listing.</h2>
-                    <p className="text-lg text-slate-500 max-w-2xl mx-auto">From MLS to social media, we&apos;ve got your entire workflow covered with professional-grade AI.</p>
+                    <p className="text-lg text-slate-500 max-w-2xl mx-auto">From property portals to social media, we&apos;ve got your entire workflow covered with professional-grade AI.</p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
@@ -122,7 +129,7 @@ export default function LandingPage() {
                         {
                             icon: Zap,
                             title: "Instant Generation",
-                            desc: "Get a full marketing package in under 30 seconds. No more writers block."
+                            desc: "Get a full marketing package in under 30 seconds. No more writer's block."
                         },
                         {
                             icon: Clock,
@@ -130,9 +137,9 @@ export default function LandingPage() {
                             desc: "Writing across different platforms takes time. We consolidate it into one click."
                         },
                         {
-                            icon: ShieldCheck,
-                            title: "MLS Compliant",
-                            desc: "Our AI is trained on MLS rules to ensure your descriptions are always compliant."
+                            icon: Globe,
+                            title: "Multi-Region Support",
+                            desc: "Built for agents in South Africa, USA, UK, and Australia. Correct currency, units, and terminology automatically."
                         }
                     ].map((feat, i) => (
                         <div key={i} className="p-8 bg-slate-50 rounded-3xl space-y-4 hover:shadow-lg transition-all border border-transparent hover:border-slate-100 group">
@@ -157,7 +164,7 @@ export default function LandingPage() {
                             Get Started for Free
                             <ArrowRight className="w-6 h-6" />
                         </Link>
-                        <p className="text-blue-100 font-medium italic opacity-80 italic">&quot;The absolute best tool I&apos;ve used this year. A game changer for my workflow.&quot; — Keller Williams Agent</p>
+                        <p className="text-blue-100 font-medium italic opacity-80">&quot;The absolute best tool I&apos;ve used this year. A game changer for my workflow.&quot; — Estate Agent, Cape Town</p>
                     </div>
                 </div>
             </section>

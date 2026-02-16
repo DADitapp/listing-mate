@@ -3,17 +3,20 @@
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { ListingOutput } from '@/types/listing';
+import { Region, getRegionConfig } from '@/config/regions';
 import { Copy, Check, Facebook, Instagram, Share2, Mail, FileText, Layout } from 'lucide-react';
 
 interface OutputDisplayProps {
     output: ListingOutput;
+    region?: Region;
 }
 
-type TabType = 'MLS' | 'Social' | 'Email' | 'Zillow' | 'Headlines';
+type TabType = 'Description' | 'Social' | 'Email' | 'Portal' | 'Headlines';
 
-export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output }) => {
-    const [activeTab, setActiveTab] = useState<TabType>('MLS');
+export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output, region = 'ZA' }) => {
+    const [activeTab, setActiveTab] = useState<TabType>('Description');
     const [copied, setCopied] = useState<string | null>(null);
+    const config = getRegionConfig(region);
 
     const handleCopy = (text: string, id: string) => {
         navigator.clipboard.writeText(text);
@@ -23,11 +26,11 @@ export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output }) => {
 
     const getTabContent = () => {
         switch (activeTab) {
-            case 'MLS':
+            case 'Description':
                 return (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-slate-900">MLS Description</h3>
+                            <h3 className="text-lg font-semibold text-slate-900">{config.listingTerminology.descriptionLabel}</h3>
                             <button
                                 onClick={() => handleCopy(output.mlsDescription, 'mls')}
                                 className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
@@ -88,7 +91,7 @@ export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output }) => {
                         <div className="flex items-center justify-between">
                             <h3 className="text-lg font-semibold text-slate-900">Email Announcement</h3>
                             <button
-                                onClick={() => handleCopy(`Subject: \${output.emailAnnouncement.subject}\n\n\${output.emailAnnouncement.body}`, 'email')}
+                                onClick={() => handleCopy(`Subject: ${output.emailAnnouncement.subject}\n\n${output.emailAnnouncement.body}`, 'email')}
                                 className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
                             >
                                 {copied === 'email' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -107,11 +110,11 @@ export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output }) => {
                         </div>
                     </div>
                 );
-            case 'Zillow':
+            case 'Portal':
                 return (
                     <div className="space-y-4">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-lg font-semibold text-slate-900">Short Description (Zillow/Portal)</h3>
+                            <h3 className="text-lg font-semibold text-slate-900">{config.listingTerminology.portalLabel}</h3>
                             <button
                                 onClick={() => handleCopy(output.shortDescription, 'short')}
                                 className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
@@ -134,10 +137,10 @@ export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output }) => {
                                 <div key={idx} className="flex items-center justify-between bg-slate-50 p-4 rounded-xl border border-slate-100 group">
                                     <p className="text-slate-700 font-medium">{headline}</p>
                                     <button
-                                        onClick={() => handleCopy(headline, `headline-\${idx}`)}
+                                        onClick={() => handleCopy(headline, `headline-${idx}`)}
                                         className="p-2 text-slate-400 hover:text-blue-600 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                                     >
-                                        {copied === `headline-\${idx}` ? <Check className="w-4 h-4 text-blue-600" /> : <Copy className="w-4 h-4" />}
+                                        {copied === `headline-${idx}` ? <Check className="w-4 h-4 text-blue-600" /> : <Copy className="w-4 h-4" />}
                                     </button>
                                 </div>
                             ))}
@@ -150,10 +153,10 @@ export const OutputDisplay: React.FC<OutputDisplayProps> = ({ output }) => {
     };
 
     const tabs: { type: TabType; label: string; icon: any }[] = [
-        { type: 'MLS', label: 'MLS', icon: FileText },
+        { type: 'Description', label: config.listingTerminology.descriptionTab, icon: FileText },
         { type: 'Social', label: 'Social', icon: Share2 },
         { type: 'Email', label: 'Email', icon: Mail },
-        { type: 'Zillow', label: 'Zillow', icon: Layout },
+        { type: 'Portal', label: config.listingTerminology.portalTab, icon: Layout },
         { type: 'Headlines', label: 'Headlines', icon: Layout },
     ];
 

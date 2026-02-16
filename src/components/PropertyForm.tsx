@@ -1,17 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { ListingInput, ListingTone } from '@/types/listing';
+import { ListingInput } from '@/types/listing';
+import { Region, REGION_CONFIGS, getRegionConfig } from '@/config/regions';
 
 interface PropertyFormProps {
     onSubmit: (data: ListingInput) => void;
     isLoading?: boolean;
 }
 
-const TONES: ListingTone[] = ['Standard', 'Luxury', 'Family', 'Investor'];
-
-const FEATURE_CATEGORIES = {
+const BASE_FEATURE_CATEGORIES: Record<string, string[]> = {
     'Kitchen & Dining': [
         'Updated Kitchen', 'Granite Countertops', 'Quartz Countertops',
         'Stainless Steel Appliances', 'Kitchen Island', 'Breakfast Nook',
@@ -44,7 +43,12 @@ const FEATURE_CATEGORIES = {
     ]
 };
 
+const REGIONS: Region[] = ['ZA', 'US', 'UK', 'AU'];
+
 export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading }) => {
+    const [region, setRegion] = useState<Region>('ZA');
+    const regionConfig = getRegionConfig(region);
+
     const [formData, setFormData] = useState<ListingInput>({
         address: '',
         beds: '',
@@ -52,29 +56,49 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
         sqft: '',
         price: '',
         features: '',
-        tone: 'Standard',
+        tone: regionConfig.tones[0],
+        region: region,
     });
     const [selectedFeatures, setSelectedFeatures] = useState<Set<string>>(new Set());
     const [additionalDetails, setAdditionalDetails] = useState('');
     const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['Kitchen & Dining', 'Interior']));
+
+    // Merge base features with region-specific features
+    const featureCategories = useMemo(() => {
+        const merged = { ...BASE_FEATURE_CATEGORIES };
+        if (regionConfig.extraFeatures) {
+            Object.entries(regionConfig.extraFeatures).forEach(([category, features]) => {
+                merged[category] = features;
+            });
+        }
+        return merged;
+    }, [regionConfig]);
+
+    const handleRegionChange = (newRegion: Region) => {
+        setRegion(newRegion);
+        const newConfig = getRegionConfig(newRegion);
+        setFormData(prev => ({
+            ...prev,
+            region: newRegion,
+            tone: newConfig.tones[0],
+        }));
+        // Clear features that may not apply to new region
+        setSelectedFeatures(new Set());
+    };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleToneChange = (tone: ListingTone) => {
+    const handleToneChange = (tone: string) => {
         setFormData((prev) => ({ ...prev, tone }));
     };
 
     const toggleFeature = (feature: string) => {
         setSelectedFeatures((prev) => {
             const next = new Set(prev);
-            if (next.has(feature)) {
-                next.delete(feature);
-            } else {
-                next.add(feature);
-            }
+            if (next.has(feature)) { next.delete(feature); } else { next.add(feature); }
             return next;
         });
     };
@@ -82,24 +106,18 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
     const toggleCategory = (category: string) => {
         setExpandedCategories((prev) => {
             const next = new Set(prev);
-            if (next.has(category)) {
-                next.delete(category);
-            } else {
-                next.add(category);
-            }
+            if (next.has(category)) { next.delete(category); } else { next.add(category); }
             return next;
         });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Combine selected feature chips + additional free-text details
         const featureList = Array.from(selectedFeatures);
         const combined = additionalDetails.trim()
             ? [...featureList, additionalDetails.trim()].join(', ')
             : featureList.join(', ');
-
-        onSubmit({ ...formData, features: combined });
+        onSubmit({ ...formData, features: combined, region });
     };
 
     return (
@@ -110,6 +128,33 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
             </div>
 
             <div className="grid grid-cols-1 gap-4">
+                {/* Region Selector */}
+                <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">Region</label>
+                    <div className="grid grid-cols-4 gap-2">
+                        {REGIONS.map((r) => {
+                            const config = getRegionConfig(r);
+                            return (
+                                <button
+                                    key={r}
+                                    type="button"
+                                    onClick={() => handleRegionChange(r)}
+                                    className={cn(
+                                        "flex items-center justify-center gap-1.5 px-3 py-2.5 text-sm rounded-xl border transition-all",
+                                        region === r
+                                            ? "bg-blue-50 border-blue-500 text-blue-700 font-semibold shadow-sm"
+                                            : "bg-white border-slate-200 text-slate-600 hover:border-slate-300"
+                                    )}
+                                >
+                                    <span className="text-lg">{config.flag}</span>
+                                    <span className="hidden sm:inline">{r}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Address */}
                 <div className="space-y-2">
                     <label htmlFor="address" className="text-sm font-medium text-slate-700">Property Address</label>
                     <input
@@ -117,63 +162,50 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                         type="text"
                         id="address"
                         name="address"
-                        placeholder="e.g. 123 Main St, Anytown, NC 27000"
+                        placeholder={regionConfig.addressPlaceholder}
                         value={formData.address}
                         onChange={handleChange}
                         className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                     />
                 </div>
 
+                {/* Property Stats */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div className="space-y-2">
                         <label htmlFor="beds" className="text-sm font-medium text-slate-700">Beds</label>
                         <input
-                            required
-                            type="text"
-                            id="beds"
-                            name="beds"
-                            placeholder="3"
-                            value={formData.beds}
-                            onChange={handleChange}
+                            required type="text" id="beds" name="beds" placeholder="3"
+                            value={formData.beds} onChange={handleChange}
                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                         />
                     </div>
                     <div className="space-y-2">
                         <label htmlFor="baths" className="text-sm font-medium text-slate-700">Baths</label>
                         <input
-                            required
-                            type="text"
-                            id="baths"
-                            name="baths"
-                            placeholder="2.5"
-                            value={formData.baths}
-                            onChange={handleChange}
+                            required type="text" id="baths" name="baths" placeholder="2"
+                            value={formData.baths} onChange={handleChange}
                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label htmlFor="sqft" className="text-sm font-medium text-slate-700">Sq Ft</label>
+                        <label htmlFor="sqft" className="text-sm font-medium text-slate-700">
+                            {regionConfig.areaUnitLabel === 'm²' ? 'Size (m²)' : 'Sq Ft'}
+                        </label>
                         <input
-                            required
-                            type="text"
-                            id="sqft"
-                            name="sqft"
-                            placeholder="2500"
-                            value={formData.sqft}
-                            onChange={handleChange}
+                            required type="text" id="sqft" name="sqft"
+                            placeholder={regionConfig.areaUnit === 'sqm' ? '180' : '2500'}
+                            value={formData.sqft} onChange={handleChange}
                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                         />
                     </div>
                     <div className="space-y-2">
-                        <label htmlFor="price" className="text-sm font-medium text-slate-700">Price</label>
+                        <label htmlFor="price" className="text-sm font-medium text-slate-700">
+                            Price ({regionConfig.currencySymbol})
+                        </label>
                         <input
-                            required
-                            type="text"
-                            id="price"
-                            name="price"
-                            placeholder="250,000"
-                            value={formData.price}
-                            onChange={handleChange}
+                            required type="text" id="price" name="price"
+                            placeholder={regionConfig.pricePlaceholder}
+                            value={formData.price} onChange={handleChange}
                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
                         />
                     </div>
@@ -192,7 +224,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                     <p className="text-xs text-slate-400">Select features that apply — only these will be mentioned in the listing.</p>
 
                     <div className="space-y-2">
-                        {Object.entries(FEATURE_CATEGORIES).map(([category, features]) => (
+                        {Object.entries(featureCategories).map(([category, features]) => (
                             <div key={category} className="border border-slate-100 rounded-xl overflow-hidden">
                                 <button
                                     type="button"
@@ -214,13 +246,11 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                                         </svg>
                                     </div>
                                 </button>
-
                                 {expandedCategories.has(category) && (
                                     <div className="px-4 py-3 flex flex-wrap gap-2">
                                         {features.map((feature) => (
                                             <button
-                                                key={feature}
-                                                type="button"
+                                                key={feature} type="button"
                                                 onClick={() => toggleFeature(feature)}
                                                 className={cn(
                                                     "px-3 py-1.5 text-xs rounded-full border transition-all font-medium",
@@ -229,9 +259,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                                                         : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700"
                                                 )}
                                             >
-                                                {selectedFeatures.has(feature) && (
-                                                    <span className="mr-1">✓</span>
-                                                )}
+                                                {selectedFeatures.has(feature) && <span className="mr-1">✓</span>}
                                                 {feature}
                                             </button>
                                         ))}
@@ -248,8 +276,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                         Additional Details <span className="text-slate-400 font-normal">(optional)</span>
                     </label>
                     <textarea
-                        id="additionalDetails"
-                        rows={3}
+                        id="additionalDetails" rows={3}
                         placeholder="Any other details: recent renovations, community amenities, school district, nearby attractions..."
                         value={additionalDetails}
                         onChange={(e) => setAdditionalDetails(e.target.value)}
@@ -260,11 +287,10 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                 {/* Tone Selector */}
                 <div className="space-y-3">
                     <label className="text-sm font-medium text-slate-700">Listing Tone</label>
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                        {TONES.map((tone) => (
+                    <div className="flex flex-wrap gap-2">
+                        {regionConfig.tones.map((tone) => (
                             <button
-                                key={tone}
-                                type="button"
+                                key={tone} type="button"
                                 onClick={() => handleToneChange(tone)}
                                 className={cn(
                                     "px-3 py-2 text-sm rounded-lg border transition-all",
@@ -281,13 +307,10 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
             </div>
 
             <button
-                disabled={isLoading}
-                type="submit"
+                disabled={isLoading} type="submit"
                 className={cn(
                     "w-full py-4 px-6 rounded-xl text-white font-semibold transition-all shadow-lg",
-                    isLoading
-                        ? "bg-slate-400 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98] shadow-blue-200"
+                    isLoading ? "bg-slate-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 active:scale-[0.98] shadow-blue-200"
                 )}
             >
                 {isLoading ? (

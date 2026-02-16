@@ -1,4 +1,6 @@
-export type ListingTone = 'Standard' | 'Luxury' | 'Family' | 'Investor';
+import { Region } from '@/config/regions';
+
+export type ListingTone = string; // Now dynamic per region
 
 export interface ListingInput {
     address: string;
@@ -7,7 +9,8 @@ export interface ListingInput {
     sqft: string;
     price: string;
     features: string;
-    tone: ListingTone;
+    tone: string;
+    region: Region;
 }
 
 export interface ListingOutput {

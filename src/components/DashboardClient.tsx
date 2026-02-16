@@ -5,6 +5,7 @@ import { PropertyForm } from '@/components/PropertyForm';
 import { OutputDisplay } from '@/components/OutputDisplay';
 import { PricingModal } from '@/components/PricingModal';
 import { ListingInput, ListingOutput } from '@/types/listing';
+import { Region, getRegionConfig } from '@/config/regions';
 import { Sparkles, Building2, Zap, LayoutDashboard, LogOut, User, Crown, History, Calendar, Gift, Copy, Check } from 'lucide-react';
 import { logout } from '@/app/login/actions';
 import { cn } from '@/lib/utils';
@@ -31,6 +32,7 @@ export default function DashboardClient({
 }) {
     const [isLoading, setIsLoading] = useState(false);
     const [output, setOutput] = useState<ListingOutput | null>(null);
+    const [currentRegion, setCurrentRegion] = useState<Region>('ZA');
     const [error, setError] = useState<string | null>(null);
     const [isPricingOpen, setIsPricingOpen] = useState(false);
     const [history, setHistory] = useState<SavedListing[]>([]);
@@ -83,6 +85,7 @@ export default function DashboardClient({
 
             const data = await response.json();
             setOutput(data);
+            setCurrentRegion(input.region || 'ZA');
 
             fetchHistory();
 
@@ -156,7 +159,7 @@ export default function DashboardClient({
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2 text-blue-600 font-bold text-sm uppercase tracking-widest">
                                     <Sparkles className="w-4 h-4" />
-                                    AI Listing Assistant
+                                    AI Property Listing Writer
                                 </div>
                                 {!isPro && (
                                     <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 rounded-full border border-amber-100">
@@ -165,7 +168,7 @@ export default function DashboardClient({
                                 )}
                             </div>
                             <h1 className="text-3xl font-bold text-slate-900 leading-tight tracking-tight">
-                                Generate your entire listing package in 30 seconds.
+                                Generate your entire property listing package in 30 seconds.
                             </h1>
 
                             {!isPro && (
@@ -234,7 +237,7 @@ export default function DashboardClient({
                                                 </div>
                                             </div>
                                             <p className="text-sm font-bold text-slate-900 truncate group-hover:text-blue-700">{item.address}</p>
-                                            <p className="text-xs text-slate-500 mt-1 font-medium font-mono opacity-80">$\${item.price}</p>
+                                            <p className="text-xs text-slate-500 mt-1 font-medium font-mono opacity-80">{item.price}</p>
                                         </button>
                                     ))
                                 )}
@@ -264,7 +267,7 @@ export default function DashboardClient({
                                 <p className="text-slate-500 leading-relaxed max-w-sm px-4 font-medium italic">Our AI is analyzing your property details to write high-converting copy across all channels.</p>
                             </div>
                         ) : (
-                            <OutputDisplay output={output!} />
+                            <OutputDisplay output={output!} region={currentRegion} />
                         )}
                     </div>
                 </div>
