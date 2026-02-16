@@ -1,10 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 
-// Post-esbuild step: patch the FINAL _worker.js output to remove ALL
-// node:crypto references that esbuild re-introduced from npm dependencies.
+// Post-esbuild step: patch the FINAL _worker.js output to remove
+// require("node:crypto") calls that esbuild re-introduces.
+//
+// IMPORTANT: We only patch require() calls (CommonJS), NOT ESM imports.
+// Cloudflare Workers with nodejs_compat support ESM imports like:
+//   import { createHash } from "node:crypto"  ← This works fine!
+// But they crash on require() calls in ESM context:
+//   require("node:crypto")  ← This crashes with "Dynamic require is not supported"
 
-console.log('\n📁 Phase 3: Post-processing _worker.js...');
+console.log('\n📁 Phase 3: Post-processing _worker.js (require-only)...');
 
 const workerPath = path.resolve(process.cwd(), '.open-next/assets/_worker.js');
 
@@ -15,46 +21,68 @@ if (!fs.existsSync(workerPath)) {
 
 let content = fs.readFileSync(workerPath, 'utf8');
 
-// Count before
-const beforeCount = (content.match(/node:crypto/g) || []).length;
-console.log(`   Total "node:crypto" references before: ${beforeCount}`);
+// Count require() calls specifically (NOT import statements)
+const requirePatterns = [
+    /require\s*\(\s*["']node:crypto["']\s*\)/g,
+];
 
-if (beforeCount > 0) {
-    // 1. Replace standard require("node:crypto") calls
-    content = content.replace(/require\s*\(\s*["']node:crypto["']\s*\)/g, '({})');
+let totalFixed = 0;
 
-    // 2. Replace minified require wrappers like Ba("node:crypto"), __require("node:crypto")
-    //    Pattern: any identifier followed by ("node:crypto")
-    content = content.replace(/([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(\s*["']node:crypto["']\s*\)/g, (match, funcName) => {
-        // Don't replace if it's obviously not a require (e.g., "includes", "indexOf")
-        if (['includes', 'indexOf', 'startsWith', 'endsWith', 'match', 'replace', 'push'].includes(funcName)) {
-            return match;
-        }
-        console.log(`   Replacing: ${funcName}("node:crypto") → ({})`);
-        return '({})';
-    });
+// 1. Replace standard require("node:crypto") calls
+const stdMatches = (content.match(/require\s*\(\s*["']node:crypto["']\s*\)/g) || []).length;
+console.log(`   Standard require("node:crypto") calls: ${stdMatches}`);
+content = content.replace(/require\s*\(\s*["']node:crypto["']\s*\)/g, '({})');
+totalFixed += stdMatches;
 
-    // 3. Replace bare ESM imports: import"node:crypto" or import "node:crypto"
-    content = content.replace(/import\s*["']node:crypto["']\s*;?/g, '');
+// 2. Replace minified require wrappers: Ba("node:crypto"), __require("node:crypto"), etc.
+//    These are renamed require() calls that esbuild generates.
+//    Pattern: identifier("node:crypto") where identifier is NOT an ESM keyword
+const wrapperRegex = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(\s*["']node:crypto["']\s*\)/g;
+let match;
+const wrappersToReplace = [];
+const esmKeywords = ['import', 'from', 'export'];
 
-    // 4. Replace ESM import-from: from"node:crypto" or from "node:crypto"
-    content = content.replace(/from\s*["']node:crypto["']/g, 'from "data:text/javascript,export default {}"');
+// Reset regex
+const scanContent = content;
+while ((match = wrapperRegex.exec(scanContent)) !== null) {
+    const funcName = match[1];
+    // Skip if it's an ESM keyword or a method we shouldn't replace
+    if (esmKeywords.includes(funcName)) continue;
+    // Skip if it looks like it's part of an import statement context
+    // Check preceding characters for 'from' or 'import'
+    const precedingChars = scanContent.substring(Math.max(0, match.index - 10), match.index);
+    if (precedingChars.includes('from') || precedingChars.includes('import')) continue;
 
-    // 5. Replace string literals in config arrays like edgeExternals:["node:crypto"]
-    content = content.replace(/["']node:crypto["']/g, '"__removed__"');
+    wrappersToReplace.push({ funcName, fullMatch: match[0], index: match.index });
+}
 
-    fs.writeFileSync(workerPath, content);
+console.log(`   Minified require wrappers found: ${wrappersToReplace.length}`);
+for (const wrapper of wrappersToReplace) {
+    console.log(`   Replacing: ${wrapper.funcName}("node:crypto") → ({})`);
+    content = content.replace(wrapper.fullMatch, '({})');
+    totalFixed++;
+}
 
-    // Verify
-    const verifyContent = fs.readFileSync(workerPath, 'utf8');
-    const remaining = (verifyContent.match(/node:crypto/g) || []).length;
-    console.log(`\n   Total "node:crypto" references after: ${remaining}`);
+// Write the patched file
+fs.writeFileSync(workerPath, content);
 
-    if (remaining === 0) {
-        console.log('✅ VERIFIED: Zero node:crypto references in final _worker.js');
-    } else {
-        console.warn(`⚠️  WARNING: ${remaining} node:crypto references remain`);
+// Verify — count ALL remaining node:crypto references
+const verifyContent = fs.readFileSync(workerPath, 'utf8');
+const remainingRequire = (verifyContent.match(/require\s*\(\s*["']node:crypto["']\s*\)/g) || []).length;
+const remainingImport = (verifyContent.match(/from\s*["']node:crypto["']/g) || []).length;
+const remainingBare = (verifyContent.match(/import\s*["']node:crypto["']/g) || []).length;
+
+console.log(`\n   Summary:`);
+console.log(`   - require() calls fixed: ${totalFixed}`);
+console.log(`   - require() calls remaining: ${remainingRequire}`);
+console.log(`   - ESM import-from remaining: ${remainingImport} (OK — nodejs_compat handles these)`);
+console.log(`   - ESM bare import remaining: ${remainingBare} (OK — nodejs_compat handles these)`);
+
+if (remainingRequire === 0) {
+    console.log('\n✅ VERIFIED: Zero require("node:crypto") calls in final _worker.js');
+    if (remainingImport > 0 || remainingBare > 0) {
+        console.log('   ESM imports left intact — Cloudflare nodejs_compat will resolve them at runtime.');
     }
 } else {
-    console.log('ℹ️  _worker.js is already clean');
+    console.warn(`\n⚠️  WARNING: ${remainingRequire} require() calls remain — these will crash at runtime`);
 }
