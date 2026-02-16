@@ -153,6 +153,64 @@ export default function LandingPage() {
                 </div>
             </section>
 
+            {/* Pricing Section */}
+            <section id="pricing" className="py-32 bg-slate-50 border-y border-slate-100">
+                <div className="max-w-5xl mx-auto px-6">
+                    <div className="text-center mb-16 space-y-4">
+                        <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Simple, transparent pricing.</h2>
+                        <p className="text-lg text-slate-500">Start free. Upgrade when you&apos;re ready.</p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+                        {/* Free Tier */}
+                        <div className="bg-white rounded-3xl p-8 border border-slate-200 space-y-6 shadow-sm">
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900">Free</h3>
+                                <p className="text-sm text-slate-500 mt-1">Try it out, no card needed</p>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-5xl font-extrabold text-slate-900">R0</span>
+                                <span className="text-slate-400 font-medium">/forever</span>
+                            </div>
+                            <ul className="space-y-3 text-sm text-slate-600">
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> 5 listing packages</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> All output formats</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Multi-region support</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Copy to clipboard</li>
+                            </ul>
+                            <Link href="/login" className="block w-full py-3 text-center border-2 border-slate-200 text-slate-700 font-bold rounded-xl hover:border-slate-300 transition-all">
+                                Get Started
+                            </Link>
+                        </div>
+
+                        {/* Pro Tier */}
+                        <div className="bg-white rounded-3xl p-8 border-2 border-blue-500 space-y-6 shadow-xl shadow-blue-100 relative">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-blue-600 text-white text-xs font-bold rounded-full uppercase tracking-wider">
+                                Most Popular
+                            </div>
+                            <div>
+                                <h3 className="text-xl font-bold text-slate-900">Pro</h3>
+                                <p className="text-sm text-slate-500 mt-1">For active agents</p>
+                            </div>
+                            <div className="flex items-baseline gap-1">
+                                <span className="text-5xl font-extrabold text-slate-900">R199</span>
+                                <span className="text-slate-400 font-medium">/month</span>
+                            </div>
+                            <ul className="space-y-3 text-sm text-slate-600">
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> <strong>Unlimited</strong> listing packages</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> All output formats</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Multi-region support</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Listing history &amp; archive</li>
+                                <li className="flex items-center gap-2"><span className="text-green-500 font-bold">✓</span> Priority support</li>
+                            </ul>
+                            <Link href="/login" className="block w-full py-3 text-center bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
+                                Start Free Trial
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Call to Action */}
             <section className="py-24 max-w-7xl mx-auto px-6">
                 <div className="bg-blue-600 rounded-[3rem] p-12 lg:p-20 text-center text-white space-y-12 shadow-2xl shadow-blue-200">
