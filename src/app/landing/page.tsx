@@ -1,6 +1,5 @@
 'use client';
 
-export const runtime = 'edge';
 
 // Build Refresh ID: 2026-02-16-01-35
 import React from 'react';
