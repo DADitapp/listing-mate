@@ -2,21 +2,23 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import DashboardClient from '@/components/DashboardClient'
+import LandingPage from '@/app/landing/page'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
 
-  // Gracefully handle missing configuration by redirecting to landing
+  // If Supabase isn't configured, show landing page
   if (!supabase) {
-    redirect('/landing')
+    return <LandingPage />
   }
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Unauthenticated visitors see the landing page
   if (!user) {
-    redirect('/login')
+    return <LandingPage />
   }
 
   // Fetch full profile info

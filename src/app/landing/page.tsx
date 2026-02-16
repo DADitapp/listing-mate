@@ -18,7 +18,7 @@ export default function LandingPage() {
                 <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                     <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
                     <a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a>
-                    <Link href="/" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-50">
+                    <Link href="/login" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-50">
                         Get Started Free
                     </Link>
                 </div>
@@ -39,7 +39,7 @@ export default function LandingPage() {
                             Generate listing descriptions, social media posts, and email announcements instantly. Stop wasting hours on marketing copy and focus on closing deals.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                            <Link href="/" className="px-8 py-4 bg-blue-600 text-white text-lg font-bold rounded-2xl hover:bg-blue-700 hover:scale-[1.02] transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2">
+                            <Link href="/login" className="px-8 py-4 bg-blue-600 text-white text-lg font-bold rounded-2xl hover:bg-blue-700 hover:scale-[1.02] transition-all shadow-xl shadow-blue-100 flex items-center justify-center gap-2">
                                 Start Generating Now
                                 <ArrowRight className="w-5 h-5" />
                             </Link>
@@ -160,7 +160,7 @@ export default function LandingPage() {
                         Ready to spend less time typing and more time selling?
                     </h2>
                     <div className="space-y-6">
-                        <Link href="/" className="px-10 py-5 bg-white text-blue-600 text-xl font-bold rounded-2xl hover:bg-slate-50 transition-all inline-flex items-center gap-3">
+                        <Link href="/login" className="px-10 py-5 bg-white text-blue-600 text-xl font-bold rounded-2xl hover:bg-slate-50 transition-all inline-flex items-center gap-3">
                             Get Started for Free
                             <ArrowRight className="w-6 h-6" />
                         </Link>
