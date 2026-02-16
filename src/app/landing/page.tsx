@@ -115,7 +115,7 @@ export default function LandingPage() {
             <section id="features" className="py-32 max-w-7xl mx-auto px-6">
                 <div className="text-center mb-20 space-y-4">
                     <h2 className="text-4xl font-extrabold text-slate-900 tracking-tight">Everything you need to market a listing.</h2>
-                    <p className="text-lg text-slate-500 max-w-2xl mx-auto">From MLS to social media, we've got your entire workflow covered with professional-grade AI.</p>
+                    <p className="text-lg text-slate-500 max-w-2xl mx-auto">From MLS to social media, we&apos;ve got your entire workflow covered with professional-grade AI.</p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8">
@@ -158,7 +158,7 @@ export default function LandingPage() {
                             Get Started for Free
                             <ArrowRight className="w-6 h-6" />
                         </Link>
-                        <p className="text-blue-100 font-medium italic opacity-80 italic">"The absolute best tool I've used this year. A game changer for my workflow." — Keller Williams Agent</p>
+                        <p className="text-blue-100 font-medium italic opacity-80 italic">&quot;The absolute best tool I&apos;ve used this year. A game changer for my workflow.&quot; — Keller Williams Agent</p>
                     </div>
                 </div>
             </section>

@@ -107,10 +107,7 @@ export default async function LoginPage({
                     </form>
 
                     <footer className="mt-8 pt-8 border-t border-slate-100">
-                        <div className="flex items-center gap-3 text-sm text-slate-600 bg-slate-50 p-4 rounded-2xl">
-                            <Sparkles className="w-5 h-5 text-blue-600" />
-                            <span>Join <span className="font-bold text-slate-900">500+ professionals</span> saving hours on marketing every week.</span>
-                        </div>
+                        <p className="text-slate-500">Welcome back! Let&apos;s get those listings live.</p>
                     </footer>
                 </div>
             </div>
