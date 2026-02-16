@@ -5,35 +5,46 @@ const SYSTEM_PROMPT = `You are a senior real estate copywriter with 15+ years of
 You understand MLS compliance, persuasive property marketing, and buyer psychology.
 Your writing is professional, specific, and persuasive without being exaggerated.
 
-CRITICAL RULES:
-- You MUST use the EXACT property details provided (address, beds, baths, sqft, price). NEVER invent or change these values.
-- NEVER use emojis or excessive exclamation marks.
-- Avoid Fair Housing violations (no references to race, religion, national origin, sex, familial status, disability, or neighborhood demographics).
-- Always highlight the most valuable selling points and use vivid but accurate descriptions.
-- If no special features are provided, focus on the property's location, layout, and value proposition.
-- Match the requested tone precisely.`;
+CRITICAL ACCURACY RULES — VIOLATION OF THESE IS UNACCEPTABLE:
+1. You MUST use the EXACT property details provided: address, bedrooms, bathrooms, square footage, and price. NEVER change these numbers.
+2. You may ONLY describe features that are EXPLICITLY listed in the "Features" field. Do NOT invent features, rooms, amenities, or upgrades that were not provided.
+3. If no features are provided, write a general description focusing on the property's basics (location, size, layout, value) without mentioning specific finishes, appliances, or amenities.
+4. NEVER use emojis or excessive exclamation marks.
+5. Avoid Fair Housing violations (no references to race, religion, national origin, sex, familial status, disability, or neighborhood demographics).
+6. Match the requested tone precisely: Standard (professional MLS), Luxury (upscale aspirational), Family (warm, community-focused), Investor (ROI/numbers-focused).`;
 
 export async function generateListingPackage(input: ListingInput): Promise<ListingOutput> {
-    const prompt = `Write a complete real estate marketing package for the following property:
-  
-  Address: ${input.address}
-  Bedrooms: ${input.beds}
-  Bathrooms: ${input.baths}
-  Square Feet: ${input.sqft}
-  Price: ${input.price}
-  Features: ${input.features || 'None specified'}
-  Tone: ${input.tone || 'Professional'}
+    const hasFeatures = input.features && input.features.trim().length > 0;
 
-  IMPORTANT: You MUST use the EXACT details above. Do NOT change the number of bedrooms, bathrooms, square footage, or price. These are verified facts.
+    const prompt = `Write a complete real estate marketing package for this property.
 
-  Generate the following 5 outputs in valid JSON format:
-  1. "mlsDescription": A professional MLS listing description (150-250 words) using the EXACT property details above.
-  2. "socialMediaPost": An object with "facebook" and "instagram" posts.
-  3. "emailAnnouncement": An object with a "subject" line and "body" for an email blast.
-  4. "shortDescription": A 50-80 word summary for Zillow/portals.
-  5. "headlines": An array of 5 catchy headlines.
+PROPERTY FACTS (use these EXACTLY — do not change any numbers):
+- Address: ${input.address}
+- Bedrooms: ${input.beds}
+- Bathrooms: ${input.baths}
+- Square Feet: ${input.sqft}
+- Listed Price: $${input.price}
+- Tone: ${input.tone || 'Standard'}
+${hasFeatures ? `- Verified Features: ${input.features}` : '- Features: None specified. Do NOT invent any features.'}
 
-  Ensure the output is strictly valid JSON with these exact keys.`;
+${hasFeatures
+            ? 'IMPORTANT: Only mention the features listed above. Do NOT add features that were not provided.'
+            : 'IMPORTANT: Since no specific features were listed, write a general description about the home\'s basics — size, layout, location appeal, and value proposition. Do NOT mention specific finishes, appliances, upgrades, or amenities.'}
+
+Generate the following in valid JSON format with these exact keys:
+{
+  "mlsDescription": "Professional MLS listing description, 150-250 words, using ONLY the facts and features above",
+  "socialMediaPost": {
+    "facebook": "Engaging Facebook post with the property facts",
+    "instagram": "Instagram caption with relevant hashtags"
+  },
+  "emailAnnouncement": {
+    "subject": "Email subject line",
+    "body": "Email body for agent's contact list"
+  },
+  "shortDescription": "50-80 word summary for Zillow/portals",
+  "headlines": ["headline1", "headline2", "headline3", "headline4", "headline5"]
+}`;
 
     const openai = getOpenAIClient();
     const response = await openai.chat.completions.create({

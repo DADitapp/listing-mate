@@ -11,6 +11,39 @@ interface PropertyFormProps {
 
 const TONES: ListingTone[] = ['Standard', 'Luxury', 'Family', 'Investor'];
 
+const FEATURE_CATEGORIES = {
+    'Kitchen & Dining': [
+        'Updated Kitchen', 'Granite Countertops', 'Quartz Countertops',
+        'Stainless Steel Appliances', 'Kitchen Island', 'Breakfast Nook',
+        'Pantry', 'Open to Living Area', 'Gas Range'
+    ],
+    'Interior': [
+        'Hardwood Floors', 'New Carpet', 'Tile Flooring',
+        'Crown Molding', 'Vaulted Ceilings', 'Fireplace',
+        'Walk-in Closet', 'Laundry Room', 'Bonus Room',
+        'Home Office', 'Finished Basement', 'New Paint'
+    ],
+    'Primary Suite': [
+        'Primary on Main', 'Ensuite Bathroom', 'Double Vanity',
+        'Walk-in Shower', 'Soaking Tub', 'Large Walk-in Closet'
+    ],
+    'Exterior & Lot': [
+        'Fenced Yard', 'Covered Patio', 'Deck',
+        'Pool', 'Sprinkler System', 'Mature Trees',
+        'Corner Lot', 'Cul-de-sac', 'Landscaped',
+        'Outdoor Kitchen', 'Shed/Workshop', 'Garden Area'
+    ],
+    'Garage & Parking': [
+        'Attached Garage', '2-Car Garage', '3-Car Garage',
+        'Driveway', 'EV Charger', 'Oversized Garage'
+    ],
+    'Systems & Updates': [
+        'New Roof', 'New HVAC', 'New Water Heater',
+        'New Windows', 'Solar Panels', 'Smart Home Features',
+        'Security System', 'Tankless Water Heater', 'Energy Efficient'
+    ]
+};
+
 export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading }) => {
     const [formData, setFormData] = useState<ListingInput>({
         address: '',
@@ -21,6 +54,9 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
         features: '',
         tone: 'Standard',
     });
+    const [selectedFeatures, setSelectedFeatures] = useState<Set<string>>(new Set());
+    const [additionalDetails, setAdditionalDetails] = useState('');
+    const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['Kitchen & Dining', 'Interior']));
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -31,9 +67,39 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
         setFormData((prev) => ({ ...prev, tone }));
     };
 
+    const toggleFeature = (feature: string) => {
+        setSelectedFeatures((prev) => {
+            const next = new Set(prev);
+            if (next.has(feature)) {
+                next.delete(feature);
+            } else {
+                next.add(feature);
+            }
+            return next;
+        });
+    };
+
+    const toggleCategory = (category: string) => {
+        setExpandedCategories((prev) => {
+            const next = new Set(prev);
+            if (next.has(category)) {
+                next.delete(category);
+            } else {
+                next.add(category);
+            }
+            return next;
+        });
+    };
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        // Combine selected feature chips + additional free-text details
+        const featureList = Array.from(selectedFeatures);
+        const combined = additionalDetails.trim()
+            ? [...featureList, additionalDetails.trim()].join(', ')
+            : featureList.join(', ');
+
+        onSubmit({ ...formData, features: combined });
     };
 
     return (
@@ -51,7 +117,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                         type="text"
                         id="address"
                         name="address"
-                        placeholder="e.g. 123 Luxury Lane, Beverly Hills"
+                        placeholder="e.g. 123 Main St, Anytown, NC 27000"
                         value={formData.address}
                         onChange={handleChange}
                         className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
@@ -105,7 +171,7 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                             type="text"
                             id="price"
                             name="price"
-                            placeholder="850,000"
+                            placeholder="250,000"
                             value={formData.price}
                             onChange={handleChange}
                             className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
@@ -113,19 +179,85 @@ export const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, isLoading 
                     </div>
                 </div>
 
+                {/* Feature Checkboxes */}
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-slate-700">Property Features</label>
+                        {selectedFeatures.size > 0 && (
+                            <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-full">
+                                {selectedFeatures.size} selected
+                            </span>
+                        )}
+                    </div>
+                    <p className="text-xs text-slate-400">Select features that apply — only these will be mentioned in the listing.</p>
+
+                    <div className="space-y-2">
+                        {Object.entries(FEATURE_CATEGORIES).map(([category, features]) => (
+                            <div key={category} className="border border-slate-100 rounded-xl overflow-hidden">
+                                <button
+                                    type="button"
+                                    onClick={() => toggleCategory(category)}
+                                    className="w-full flex items-center justify-between px-4 py-2.5 bg-slate-50 hover:bg-slate-100 transition-colors"
+                                >
+                                    <span className="text-sm font-medium text-slate-700">{category}</span>
+                                    <div className="flex items-center gap-2">
+                                        {features.filter(f => selectedFeatures.has(f)).length > 0 && (
+                                            <span className="text-xs text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded-full">
+                                                {features.filter(f => selectedFeatures.has(f)).length}
+                                            </span>
+                                        )}
+                                        <svg
+                                            className={cn("w-4 h-4 text-slate-400 transition-transform", expandedCategories.has(category) && "rotate-180")}
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                        >
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                {expandedCategories.has(category) && (
+                                    <div className="px-4 py-3 flex flex-wrap gap-2">
+                                        {features.map((feature) => (
+                                            <button
+                                                key={feature}
+                                                type="button"
+                                                onClick={() => toggleFeature(feature)}
+                                                className={cn(
+                                                    "px-3 py-1.5 text-xs rounded-full border transition-all font-medium",
+                                                    selectedFeatures.has(feature)
+                                                        ? "bg-blue-50 border-blue-300 text-blue-700"
+                                                        : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                                                )}
+                                            >
+                                                {selectedFeatures.has(feature) && (
+                                                    <span className="mr-1">✓</span>
+                                                )}
+                                                {feature}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Additional Details */}
                 <div className="space-y-2">
-                    <label htmlFor="features" className="text-sm font-medium text-slate-700">Key Features</label>
+                    <label htmlFor="additionalDetails" className="text-sm font-medium text-slate-700">
+                        Additional Details <span className="text-slate-400 font-normal">(optional)</span>
+                    </label>
                     <textarea
-                        id="features"
-                        name="features"
-                        rows={4}
-                        placeholder="e.g. Modern kitchen with quartz counters, hardwood floors, large backyard pool, solar panels..."
-                        value={formData.features}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none"
+                        id="additionalDetails"
+                        rows={3}
+                        placeholder="Any other details: recent renovations, community amenities, school district, nearby attractions..."
+                        value={additionalDetails}
+                        onChange={(e) => setAdditionalDetails(e.target.value)}
+                        className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none text-sm"
                     />
                 </div>
 
+                {/* Tone Selector */}
                 <div className="space-y-3">
                     <label className="text-sm font-medium text-slate-700">Listing Tone</label>
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
