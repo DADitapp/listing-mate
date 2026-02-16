@@ -5,10 +5,10 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 # Public Variables (Non-Sensitive)
-NEXT_PUBLIC_SUPABASE_URL = "https://your_supabase_url_here"
-NEXT_PUBLIC_SUPABASE_ANON_KEY = "your_supabase_anon_key_here"
+NEXT_PUBLIC_SUPABASE_URL = "https://obiprbbqqmjmresexnmc.supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9iaXByYmJxcW1qbXJlc2V4bm1jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNjIyMDYsImV4cCI6MjA4NjgzODIwNn0.gGkHYnJ81Ogcew471E-IA6K6Y-xr5D8YiDi-xSeqbQI"
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "your_stripe_publishable_key_here"
 NEXT_PUBLIC_APP_URL = "https://listing-mate.pages.dev"
 
-# NOTE: Sensitive Secrets (OPENAI_API_KEY, STRIPE_SECRET_KEY, etc.) 
+# NOTE: Sensitive Secrets (OPENAI_API_KEY, STRIPE_SECRET_KEY, SUPABASE_SERVICE_ROLE_KEY) 
 # must be added via the Cloudflare Dashboard under Settings > Variables > Secrets.
