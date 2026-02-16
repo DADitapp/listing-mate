@@ -1,5 +1,5 @@
 name = "listing-mate"
 pages_build_output_dir = ".open-next/assets"
 compatibility_date = "2025-02-14"
-compatibility_flags = ["nodejs_compat"] # IMPORTANT: Ensure this is also enabled in the Cloudflare Dashboard under Settings > Functions
-
+# Compatibility flags are managed via the Cloudflare Dashboard to avoid Git-integrated CI conflicts.
+# Ensure 'nodejs_compat' is enabled in Settings > Functions > Compatibility Flags.
