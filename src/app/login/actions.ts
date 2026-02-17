@@ -40,6 +40,11 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
     const supabase = await createClient()
+
+    if (!supabase) {
+        redirect('/login?error=Service unavailable')
+    }
+
     const headerList = await headers()
     const ip = headerList.get('x-forwarded-for')?.split(',')[0] || 'unknown'
 
@@ -98,6 +103,11 @@ export async function signup(formData: FormData) {
 
 export async function logout() {
     const supabase = await createClient()
+
+    if (!supabase) {
+        redirect('/login')
+    }
+
     await supabase.auth.signOut()
     revalidatePath('/', 'layout')
     redirect('/login')
