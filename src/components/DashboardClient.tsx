@@ -133,9 +133,9 @@ export default function DashboardClient({
                         {!isPro && (
                             <button
                                 onClick={() => setIsPricingOpen(true)}
-                                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
+                                className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white text-xs sm:text-sm font-bold rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-200"
                             >
-                                <Crown className="w-4 h-4" />
+                                <Crown className="w-3 h-3 sm:w-4 sm:h-4" />
                                 Upgrade
                             </button>
                         )}

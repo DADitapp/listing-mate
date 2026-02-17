@@ -19,6 +19,10 @@ const DISPOSABLE_DOMAINS = [
 export async function login(formData: FormData) {
     const supabase = await createClient()
 
+    if (!supabase) {
+        redirect('/login?error=Service unavailable')
+    }
+
     const data = {
         email: formData.get('email') as string,
         password: formData.get('password') as string,
@@ -89,7 +93,7 @@ export async function signup(formData: FormData) {
     }
 
     revalidatePath('/', 'layout')
-    redirect('/login?message=Check your email to confirm your account')
+    redirect('/')
 }
 
 export async function logout() {
