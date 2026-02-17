@@ -22,19 +22,22 @@ export async function POST(req: Request) {
             process.env.STRIPE_WEBHOOK_SECRET!
         )
     } catch (error: any) {
-        return NextResponse.json({ error: `Webhook Error: \${error.message}` }, { status: 400 })
+        return NextResponse.json({ error: `Webhook Error: ${error.message}` }, { status: 400 })
     }
 
     const session = event.data.object as any
 
     if (event.type === 'checkout.session.completed') {
         const userId = session.metadata.userId
+        const region = session.metadata.region || 'ZA'
+        const tier = session.metadata.tier || 'pro'
 
-        // 1. Update user to Pro status
+        // 1. Update user to paid status with region lock
         const { data: profile, error: updateError } = await supabaseAdmin
             .from('profiles')
             .update({
-                subscription_status: 'pro',
+                subscription_status: tier,
+                subscription_region: region,
                 stripe_customer_id: session.customer as string,
             })
             .eq('id', userId)
@@ -43,12 +46,7 @@ export async function POST(req: Request) {
 
         // 2. Handle Referral Reward Logic
         if (!updateError && profile?.referred_by) {
-            // In a real production app, you'd use Stripe to apply a 100% coupon or credit balance.
-            // For this MVP, we log the reward for manual/automated fulfillment.
-            console.log(`User \${userId} referred by \${profile.referred_by}. Triggering 1-month reward.`);
-
-            // Increment a hypothetical referral_rewards_pending count on the referrer's profile
-            // This can be used to display "You earned a free month!" in their dashboard.
+            console.log(`User ${userId} referred by ${profile.referred_by}. Triggering 1-month reward.`);
             await supabaseAdmin.rpc('increment_referral_reward', { referrer_id: profile.referred_by });
         }
     }
@@ -61,6 +59,7 @@ export async function POST(req: Request) {
             .from('profiles')
             .update({
                 subscription_status: 'free',
+                subscription_region: null,
             })
             .eq('stripe_customer_id', customerId)
     }

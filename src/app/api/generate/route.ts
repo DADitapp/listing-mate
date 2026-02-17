@@ -26,7 +26,7 @@ export async function POST(req: Request) {
         // Fetch user profile to check subscription and trial status
         const { data: profile, error: profileError } = await supabase
             .from('profiles')
-            .select('subscription_status, trial_listings_used')
+            .select('subscription_status, trial_listings_used, subscription_region')
             .eq('id', user.id)
             .single();
 
@@ -35,13 +35,26 @@ export async function POST(req: Request) {
         }
 
         const isPro = profile.subscription_status === 'pro';
+        const isBasic = profile.subscription_status === 'basic';
+        const isPaid = isPro || isBasic;
         const trialLimit = 3;
+        const basicMonthlyLimit = 10;
 
         const body = await req.json();
         const input: ListingInput = body.input;
 
         if (!input) {
             return NextResponse.json({ error: 'Input is required' }, { status: 400 });
+        }
+
+        // Region Lock: Paid users can only generate for their subscription region
+        if (isPaid && profile.subscription_region && input.region) {
+            if (input.region !== profile.subscription_region) {
+                return NextResponse.json(
+                    { error: `Your subscription covers ${profile.subscription_region} listings only. To generate ${input.region} listings, please update your subscription.` },
+                    { status: 403 }
+                );
+            }
         }
 
         // Basic validation
@@ -79,10 +92,17 @@ export async function POST(req: Request) {
             return NextResponse.json(existingListing.generated_output);
         }
 
-        // If it's a new generation, check trial limits for free users
-        if (!isPro && profile.trial_listings_used >= trialLimit) {
+        // If it's a new generation, check limits based on tier
+        if (!isPaid && profile.trial_listings_used >= trialLimit) {
             return NextResponse.json(
-                { error: 'Trial limit reached. Please upgrade to Pro for unlimited generations.' },
+                { error: 'Trial limit reached. Please upgrade to continue generating listings.' },
+                { status: 403 }
+            );
+        }
+
+        if (isBasic && profile.trial_listings_used >= basicMonthlyLimit) {
+            return NextResponse.json(
+                { error: 'Monthly limit reached on Basic plan. Upgrade to Pro for unlimited listings.' },
                 { status: 403 }
             );
         }
@@ -107,7 +127,7 @@ export async function POST(req: Request) {
         if (dbError) {
             console.error('Database Save Error:', dbError);
         } else if (!isPro) {
-            // Increment trial count for free users
+            // Increment usage count for free and basic users
             await supabase
                 .from('profiles')
                 .update({ trial_listings_used: profile.trial_listings_used + 1 })

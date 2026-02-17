@@ -14,7 +14,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const { priceId } = await req.json()
+        const { priceId, region, tier } = await req.json()
 
         if (!priceId) {
             return NextResponse.json({ error: 'Price ID is required' }, { status: 400 })
@@ -30,10 +30,12 @@ export async function POST(req: Request) {
                 },
             ],
             mode: 'subscription',
-            success_url: `\${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
-            cancel_url: `\${process.env.NEXT_PUBLIC_APP_URL}/dashboard?canceled=true`,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?success=true`,
+            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?canceled=true`,
             metadata: {
                 userId: user.id,
+                region: region || 'ZA',
+                tier: tier || 'pro',
             },
         })
 

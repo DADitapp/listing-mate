@@ -292,7 +292,7 @@ export default function DashboardClient({
                 </div>
             </footer>
 
-            <PricingModal isOpen={isPricingOpen} onClose={() => setIsPricingOpen(false)} />
+            <PricingModal isOpen={isPricingOpen} onClose={() => setIsPricingOpen(false)} region={currentRegion} />
         </div>
     );
 }

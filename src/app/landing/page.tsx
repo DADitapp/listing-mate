@@ -25,6 +25,9 @@ export default function LandingPage() {
                 <div className="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
                     <a href="#features" className="hover:text-blue-600 transition-colors">Features</a>
                     <a href="#pricing" className="hover:text-blue-600 transition-colors">Pricing</a>
+                    <Link href="/login" className="hover:text-blue-600 transition-colors">
+                        Login
+                    </Link>
                     <Link href="/login" className="px-5 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all shadow-md shadow-blue-50">
                         Get Started Free
                     </Link>

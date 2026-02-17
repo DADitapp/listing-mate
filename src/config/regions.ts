@@ -32,6 +32,11 @@ export interface RegionConfig {
     portalBrands: string[];
     /** Additional region-specific feature categories */
     extraFeatures?: Record<string, string[]>;
+    /** Stripe Price IDs per tier (from env vars) */
+    stripePriceIds: {
+        basic: string;
+        pro: string;
+    };
 }
 
 export const REGION_CONFIGS: Record<Region, RegionConfig> = {
@@ -69,6 +74,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
                 'Staff Quarters', 'Flatlet', 'Granny Flat'
             ],
         },
+        stripePriceIds: {
+            basic: process.env.STRIPE_PRICE_BASIC_ZA || 'not_configured',
+            pro: process.env.STRIPE_PRICE_PRO_ZA || 'not_configured',
+        },
     },
     US: {
         name: 'United States',
@@ -92,6 +101,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
         addressPlaceholder: 'e.g. 123 Main St, Anytown, NC 27000',
         pricePlaceholder: '250,000',
         portalBrands: ['ZILLOW', 'MLS', 'COMPASS', 'RE/MAX', 'KELLER WILLIAMS'],
+        stripePriceIds: {
+            basic: process.env.STRIPE_PRICE_BASIC_US || 'not_configured',
+            pro: process.env.STRIPE_PRICE_PRO_US || 'not_configured',
+        },
     },
     UK: {
         name: 'United Kingdom',
@@ -115,6 +128,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
         addressPlaceholder: 'e.g. 14 Kensington Gardens, London SW7',
         pricePlaceholder: '450,000',
         portalBrands: ['RIGHTMOVE', 'ZOOPLA', 'ONTHEMARKET', 'PURPLEBRICKS', 'FOXTONS'],
+        stripePriceIds: {
+            basic: process.env.STRIPE_PRICE_BASIC_UK || 'not_configured',
+            pro: process.env.STRIPE_PRICE_PRO_UK || 'not_configured',
+        },
     },
     AU: {
         name: 'Australia',
@@ -138,6 +155,10 @@ export const REGION_CONFIGS: Record<Region, RegionConfig> = {
         addressPlaceholder: 'e.g. 42 Harbour St, Sydney NSW 2000',
         pricePlaceholder: '850,000',
         portalBrands: ['DOMAIN', 'REALESTATE.COM.AU', 'RAY WHITE', 'LJ HOOKER', 'MCGRATH'],
+        stripePriceIds: {
+            basic: process.env.STRIPE_PRICE_BASIC_AU || 'not_configured',
+            pro: process.env.STRIPE_PRICE_PRO_AU || 'not_configured',
+        },
     },
 };
 
