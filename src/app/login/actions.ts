@@ -28,6 +28,10 @@ export async function login(formData: FormData) {
         password: formData.get('password') as string,
     }
 
+    if (!supabase) {
+        redirect('/login?error=Service unavailable')
+    }
+
     const { error } = await supabase.auth.signInWithPassword(data)
 
     if (error) {
@@ -71,6 +75,10 @@ export async function signup(formData: FormData) {
     // 3. Handle Referral if present
     let referredBy = null
     if (referralCode) {
+        if (!supabase) {
+            redirect('/login?error=Service unavailable')
+        }
+
         const { data: referrer } = await supabase
             .from('profiles')
             .select('id')
